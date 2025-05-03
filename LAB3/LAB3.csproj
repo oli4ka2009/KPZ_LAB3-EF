@@ -7,12 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.19.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
+    <PackageReference Include="Azure.Storage.Queues" Version="12.22.0" />
+	  <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.22.0">
+	  </PackageReference>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.3.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
   </ItemGroup>
+
+	<Target Name="RemoveDuplicatePublishFiles" AfterTargets="GatherAllFilesToPublish">
+		<ItemGroup>
+			<!-- Приклад: видаляємо Cosmos.CRTCompat.dll, який іде з DocumentDB.Core (win7-x64) -->
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="&#xD;&#xA;          ('%(Filename)%(Extension)' == 'Cosmos.CRTCompat.dll') &#xD;&#xA;          AND ('%(RelativePath)' == 'runtimes/win7-x64/native/Cosmos.CRTCompat.dll')&#xD;&#xA;          AND ('%(PackageId)' == 'Microsoft.Azure.DocumentDB.Core')&#xD;&#xA;        " />
+		</ItemGroup>
+	</Target>
+
 
 </Project>
